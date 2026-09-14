@@ -1,0 +1,52 @@
+https://www.curvedream.co.uk/colorful-vintage-patchwork-sunburst-pattern-turtleneck-long-sleeve-comfy-sweater-cdmt002.html
+https://www.next.co.uk/style/su766047/h56944 
+
+
+04-test-inputs
+- return clear input
+- button to clear
+- label to show last character inputted
+
+file picker (for paths and files)
+
+label background colours + border, padding
+
+image
+ - fix WIDTH to min-width and max-width
+ - what styles do we allow and which do we WARN and ignore?
+ - do we allow the image to change?
+ - check paths and write nice error messages
+ - roate?
+
+
+
+Link up with this dude:
+https://www.reddit.com/r/Python/comments/1pkk4ff/democratizing_python_a_transpiler_for_nonenglish/
+
+button click css
+BG panels
+images + install/dependancy PIL
+create new Button inside a function
+ - use timer (heartbeat) to hook up to click event
+have a something_happened("variable name", variable, variable.stash)
+
+timer / heartbeat call a function (e.g. to animate things)
+
+look in StyleProxy - this won't work for other widgets? Only buttons?
+
+pip install from github + versions
+
+sort out -- cssutils, update the toml
+
+PIANO - play music and manipulate in pitch
+make inputs look better
+lots of demos + website
+add tables (2D array to table)
+global g like in Flask
+rotate widgets
+add gravity (box2d?)
+turtle
+matplotlib
+
+DONE:
+hover css
