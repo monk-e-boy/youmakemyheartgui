@@ -6,6 +6,8 @@ from .Grid import GridWidget
 import cssutils
 from .colour import adjust_colour
 
+DEBUG = False
+
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
@@ -120,7 +122,9 @@ class MainWindow(QWidget):
         #lbl.setWordWrap(True)
         inp.adjustSize()
         inp.move(x, y)
-        print(input.instance_name, "Geometry CHANGED:", x, y)
+
+        if DEBUG:
+            print(input.instance_name, "Geometry CHANGED:", x, y)
 
 
     def update_label(self, label):
@@ -167,7 +171,9 @@ class MainWindow(QWidget):
         lbl.setWordWrap(True)
         lbl.adjustSize()
         lbl.move(x, y)
-        print(label.instance_name, "Geometry CHANGED:", x, y)
+
+        if DEBUG:
+            print(label.instance_name, "Geometry CHANGED:", x, y)
 
 
         #btn.setStyleSheet(sheet.cssText.decode("utf-8"))
@@ -237,7 +243,9 @@ class MainWindow(QWidget):
 
         # --- Apply final stylesheet ---
         btn.setStyleSheet(sheet.cssText.decode("utf-8"))
-        print("BUTTON Style:", sheet.cssText.decode("utf-8"))
+
+        if DEBUG:
+            print("BUTTON Style:", sheet.cssText.decode("utf-8"))
 
         # Convert px values → ints
         def px(key, default=0):
@@ -264,11 +272,13 @@ class MainWindow(QWidget):
             btn.setAutoDefault(False)
             btn.setDefault(False)
             btn.setGeometry(x, y, w, h)
-            print(button.instance_name, "Geometry:", x, y, w, h)
+            if DEBUG:
+                print(button.instance_name, "Geometry:", x, y, w, h)
         else:
             btn.adjustSize()
             btn.move(x, y)
-            print(button.instance_name, "Position:", x, y)
+            if DEBUG:
+                print(button.instance_name, "Position:", x, y)
 
 
     def add_button(self, button):
@@ -397,11 +407,15 @@ class MainWindow(QWidget):
             h = px("height", 40)
 
             img.setGeometry(x, y, w, h)
-            print(image.instance_name, "Geometry:", x, y, w, h)
+
+            if DEBUG:
+                print(image.instance_name, "Geometry:", x, y, w, h)
         else:
             img.adjustSize()
             img.move(x, y)
-            print(image.instance_name, "Position:", x, y)
+
+            if DEBUG:
+                print(image.instance_name, "Position:", x, y)
     
 
     def add_image(self, image):

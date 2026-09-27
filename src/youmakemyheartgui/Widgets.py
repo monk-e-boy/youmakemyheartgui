@@ -1,4 +1,11 @@
 
+#
+# TODO: fix this turd
+#
+DEBUG = False
+#
+#
+#
 
 class StyleProxy:
     def __init__(self, button):
@@ -120,7 +127,8 @@ class Button(Widget):
         # print(f"[{self._text}] style = {self._style}")
         #self.needs_repaint = True
         if self.container:
-            print(f"[{self.text}] Update GUI")
+            if DEBUG:
+                print(f"[{self.text}] Update GUI")
             self.container.update_button(self)
     
     @property
@@ -184,11 +192,18 @@ class Label(Widget):
 
     def add_style(self, s):
         super().add_style(s)
-        # debug output
-        print(f"[{self._text}] style = {self._style}")
+
+        if DEBUG:
+            # debug output
+            print(f"[{self._text}] style = {self._style}")
+        
+        
         #self.needs_repaint = True
         if self.container:
-            print(f"[{self.text}] Update GUI")
+
+            if DEBUG:
+                print(f"[{self.text}] Update GUI")
+
             # force a resize/repaint
             self.container.update_label(self)
 
@@ -222,8 +237,10 @@ class Image(Widget):
 
     def add_style(self, s):
         super().add_style(s)
-        # debug output
-        print(f"[{self._text}] style = {self._style}")
+
+        if DEBUG:
+            # debug output
+            print(f"[{self._text}] style = {self._style}")
 
         #
         # TODO when do we need to repaint?
