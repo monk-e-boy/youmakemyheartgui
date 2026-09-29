@@ -105,9 +105,9 @@ class MainWindow(QWidget):
             x = self.width() - px("right") - width
         else:
             x = px("left", 0)
-        y = px("top", 0)
-        if "bottom" in props:
-            y = self.height() - px("bottom") - h
+        #y = px("top", 0)
+        #if "bottom" in props:
+        #    y = self.height() - px("bottom") - h
 
         
 
@@ -121,6 +121,14 @@ class MainWindow(QWidget):
         inp.setStyleSheet(f"QLineEdit {{ {style_for_qt} }}")
         #lbl.setWordWrap(True)
         inp.adjustSize()
+        # inp.move(x, y)
+
+        x = px("left", 0)
+        y = px("top", 0)
+        if "right" in props:
+            x = self.width() - px("right") - inp.width()
+        if "bottom" in props:
+            y = self.height() - px("bottom") - inp.height()
         inp.move(x, y)
 
         if DEBUG:
@@ -155,11 +163,7 @@ class MainWindow(QWidget):
         else:
             x = px("left", 0)
         y = px("top", 0)
-        if "bottom" in props:
-            y = self.height() - px("bottom") - h
-
         
-
         # Build a cleaned-up stylesheet (ignore position/size)
         style_for_qt = "\n".join(
             f"{k}: {v};"
@@ -170,6 +174,13 @@ class MainWindow(QWidget):
         lbl.setStyleSheet(f"QLabel {{ {style_for_qt} }}")
         lbl.setWordWrap(True)
         lbl.adjustSize()
+
+        x = px("left", 0)
+        y = px("top", 0)
+        if "right" in props:
+            x = self.width() - px("right") - lbl.width()
+        if "bottom" in props:
+            y = self.height() - px("bottom") - lbl.height()
         lbl.move(x, y)
 
         if DEBUG:
@@ -192,7 +203,9 @@ class MainWindow(QWidget):
         #sheet = cssutils.parseString("QPushButton {" + str(button.style) +"}") ## TODO why do I have to do str() here?
         sheet = cssutils.parseString("QPushButton {" \
                                     + str(button.style) \
-                                    + "; background-gradient: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #66bb6a, stop:1 #4CAF50);" \
+                                    #+ "; background-gradient: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #66bb6a, stop:1 #4CAF50);" \
+                                    #+ "; background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #66bb6a, stop:1 #4CAF50);" \
+                                    + "; background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #81c784, stop:1 #4CAF50);" \
                                     +"}")
         
         if len(sheet.cssRules) == 0:
@@ -224,7 +237,7 @@ class MainWindow(QWidget):
         #pressed_rule = rules.get("QPushButton:pressed")
 
         if len(str(button.hover_style)) > 0:
-            print(f"Has hover: {str(button.hover_style)}")
+            # print(f"Has hover: {str(button.hover_style)}")
             hover_sheet = cssutils.parseString("QPushButton {" + str(button.hover_style) +"}") ## TODO why do I have to do str() here?
             if len(hover_sheet.cssRules) == 0:
                 print("CSS error in:" + str(button.hover_sheet))
@@ -244,7 +257,7 @@ class MainWindow(QWidget):
         # --- Apply final stylesheet ---
         btn.setStyleSheet(sheet.cssText.decode("utf-8"))
 
-        if DEBUG:
+        if DEBUG or True:
             print("BUTTON Style:", sheet.cssText.decode("utf-8"))
 
         # Convert px values → ints
@@ -259,8 +272,8 @@ class MainWindow(QWidget):
             x = self.width() - px("right") - w
 
         y = px("top", 0)
-        if "bottom" in props:
-            y = self.height() - px("bottom") - h
+        #if "bottom" in props:
+        #    y = self.height() - px("bottom") - h
         
         # NORMALLY we calculate the width depending on the text
         # but sometimes the user will override it:
@@ -276,9 +289,17 @@ class MainWindow(QWidget):
                 print(button.instance_name, "Geometry:", x, y, w, h)
         else:
             btn.adjustSize()
-            btn.move(x, y)
-            if DEBUG:
-                print(button.instance_name, "Position:", x, y)
+            # btn.move(x, y)
+            # if DEBUG:
+            #     print(button.instance_name, "Position:", x, y)
+
+        x = px("left", 0)
+        y = px("top", 0)
+        if "right" in props:
+            x = self.width() - px("right") - btn.width()
+        if "bottom" in props:
+            y = self.height() - px("bottom") - btn.height()
+        btn.move(x, y)
 
 
     def add_button(self, button):
