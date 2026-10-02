@@ -4,21 +4,9 @@ from youmakemyheartgui.Widgets import Button
 
 
 b1 = Button("Test One 😊")
-b1.style <<= "left: 50px; top: 50px;"
-#b1.style <<= (
-#    "background-color: #4CAF50;"
-#    "border: 2px solid #2E7D32;"
-#    "border-top: 2px solid #a5d6a7;"
-#    "border-bottom: 6px solid #1B5E20;"
-#    "border-radius: 8px;"
-#    "padding: 10px 18px;"
-#    "color: white;"
-#    "font-weight: bold;"
-#)
-
-
 b1.style <<= (
-    
+    "left: 50px;"
+    "top: 50px;"
     "background-color: #f0003c;"
     "border-bottom: 5px solid #a30036;"
     "border-top:    5px solid #ed487f;"
@@ -30,9 +18,23 @@ b1.style <<= (
     "font-weight: bold;"
 )
 
+#background-image: linear-gradient(#f7f8fa, #e7e9ec);
+#    border-color: #adb1b8 #a2a6ac #8d9096;
 
 
-def b1_click():
+b2 = Button("Test Grey 😊")
+b2.style <<= (
+    "left: 50px;"
+    "top: 150px;"
+    "background-color: #e7e9ec;"
+    "border: 1px solid #8d9096;"
+    "border-radius: 3px;"
+    "padding: 10px 18px;"
+    "color: #555555;"
+    "font-weight: bold;"
+)
+
+def b2_click():
     print("!")
 
 go()

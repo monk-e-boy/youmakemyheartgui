@@ -206,6 +206,7 @@ class MainWindow(QWidget):
                                     #+ "; background-gradient: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #66bb6a, stop:1 #4CAF50);" \
                                     #+ "; background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #66bb6a, stop:1 #4CAF50);" \
                                     + "; background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #81c784, stop:1 #4CAF50);" \
+                                        
                                     +"}")
         
         if len(sheet.cssRules) == 0:
@@ -238,7 +239,9 @@ class MainWindow(QWidget):
 
         if len(str(button.hover_style)) > 0:
             # print(f"Has hover: {str(button.hover_style)}")
+            
             hover_sheet = cssutils.parseString("QPushButton {" + str(button.hover_style) +"}") ## TODO why do I have to do str() here?
+
             if len(hover_sheet.cssRules) == 0:
                 print("CSS error in:" + str(button.hover_sheet))
             else:    
@@ -257,8 +260,13 @@ class MainWindow(QWidget):
         # --- Apply final stylesheet ---
         btn.setStyleSheet(sheet.cssText.decode("utf-8"))
 
+#        + "; background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #81c784, stop:1 #4CAF50);" \        
+#                                            linear-gradient(#f7f8fa, #e7e9ec)
+                                                 
+
         if DEBUG or True:
-            print("BUTTON Style:", sheet.cssText.decode("utf-8"))
+            #print("BUTTON Style:", sheet.cssText.decode("utf-8"))
+            print("BUTTON Style:", btn.styleSheet())
 
         # Convert px values → ints
         def px(key, default=0):
