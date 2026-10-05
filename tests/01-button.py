@@ -13,7 +13,7 @@ b1.style <<= (
     "border-left:   5px solid #ed487f;"
     "border-right:  5px solid #a30036;"
     "border-radius: 8px;"
-    "padding: 10px 18px;"
+    "padding: 30px 50px;"
     "color: white;"
     "font-weight: bold;"
 )
@@ -25,7 +25,7 @@ b1.style <<= (
 b2 = Button("Test Grey 😊")
 b2.style <<= (
     "left: 50px;"
-    "top: 150px;"
+    "top: 200px;"
     "background-color: #e7e9ec;"
     "border: 1px solid #8d9096;"
     "border-radius: 3px;"

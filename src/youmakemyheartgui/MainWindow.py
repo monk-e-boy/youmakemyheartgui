@@ -4,6 +4,7 @@ from PyQt6.QtCore import Qt
 from .TerminalLabel import TerminalLabel
 from .Grid import GridWidget
 import cssutils
+from .style import split_style, qt_stylesheet, place
 from .colour import adjust_colour
 
 DEBUG = False
@@ -137,6 +138,19 @@ class MainWindow(QWidget):
 
     def update_label(self, label):
         lbl = self.labels[label.instance_name]
+        layout, qt_props = split_style(label.style)
+
+        lbl.setStyleSheet(qt_stylesheet("QLabel", qt_props))
+
+        # wrap only if the student gave a width; otherwise one line, sized to the text
+        lbl.setWordWrap("width" in layout)
+
+        place(lbl, layout, self.width(), self.height())
+
+
+
+    def update_label_old(self, label):
+        lbl = self.labels[label.instance_name]
         # Parse CSS
         sheet = cssutils.parseString("QLabel  {" + str(label.style) +"}") ## TODO why do I have to do str() here?
         if len(sheet.cssRules) == 0:
@@ -191,6 +205,27 @@ class MainWindow(QWidget):
 
 
     def update_button(self, button):
+        btn = self.buttons[button.instance_name]
+        layout, qt_props = split_style(button.style)
+
+        # hover/pressed need a *colour*; if there's a gradient, use its first stop
+        base = qt_props.get("background-color", "#4CAF50")
+        hover = adjust_colour(base, 0.3)
+        pressed = adjust_colour(base, -0.3)
+
+        btn.setStyleSheet(qt_stylesheet(
+            "QPushButton", qt_props,
+            f"QPushButton:hover {{ background-color: {hover}; }}\n"
+            f"QPushButton:pressed {{ background-color: {pressed}; }}"))
+
+        place(btn, layout, self.width(), self.height())
+        btn.adjustSize()
+
+        if DEBUG:
+            print("BUTTON Style:", btn.styleSheet())
+
+
+    def update_button_old(self, button):
         btn = self.buttons[button.instance_name]
         # Parse CSS
         ##sheet = cssutils.parseString("QPushButton " + css_text)

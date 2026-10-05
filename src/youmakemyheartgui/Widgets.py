@@ -118,7 +118,7 @@ class Button(Widget):
             "font-family: \"Segoe UI\", Helvetica, Arial, sans-serif;"
             "font-size: 22px;"
             "padding: 8px;"
-            "height: 40px;"
+            #"height: 40px;"
         )
 
     def add_style(self, s):
