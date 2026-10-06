@@ -166,6 +166,11 @@ class Input(Widget):
     def internal_text_changed_handler(self):
         self._text = self.container.inputs[self.instance_name].text()
 
+    def add_style(self, s):
+        super().add_style(s)
+        if self.container:
+            self.container.update_input(self)
+
 
 class Label(Widget):
     def __init__(self, text):
@@ -242,15 +247,9 @@ class Image(Widget):
             # debug output
             print(f"[{self._text}] style = {self._style}")
 
-        #
-        # TODO when do we need to repaint?
-        # resize?
-        # change image?
-        #
-        #if self.container:
-        #    print(f"[{self.text}] Update GUI")
-        #    # force a resize/repaint
-        #    self.container.update_label(self)
+        if self.container:
+            self.container.update_image(self)
+
 
 #
 #             +------------+-----+

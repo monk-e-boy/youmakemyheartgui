@@ -12,13 +12,13 @@ instructions = Label("Type here ⤴️ the press <return> or click ➡️")
 instructions.style <<= "left 50px; top: 200px; width: 500px; min-width: 500px; max-width: 500px"
 
 clear = Button("Clear")
-clear.style <<= "left: 320px; top: 150px; background-color: #36BBA7; height: 30px"
+clear.style <<= "left: 320px; top: 150px; background-color: #36BBA7"
 
 ping = Button("Append !")
-ping.style <<= "left: 420px; top: 150px; background-color: #36BBA7; height: 30px"
+ping.style <<= "left: 420px; top: 150px; background-color: #36BBA7;"
 
 hello = Button("Set to hello")
-hello.style <<= "left: 550px; top: 150px; background-color: #A736BB; height: 30px"
+hello.style <<= "left: 550px; top: 150px; background-color: #A736BB;"
 
 yay = Button("Yay ➡️")
 yay.style <<= "left: 550px; top: 200px;"

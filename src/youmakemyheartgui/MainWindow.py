@@ -213,6 +213,8 @@ class MainWindow(QWidget):
         hover = adjust_colour(base, 0.3)
         pressed = adjust_colour(base, -0.3)
 
+        self._apply_visibility(btn, qt_props, None)
+
         btn.setStyleSheet(qt_stylesheet(
             "QPushButton", qt_props,
             f"QPushButton:hover {{ background-color: {hover}; }}\n"
@@ -492,4 +494,19 @@ class MainWindow(QWidget):
 
         self.images[image.instance_name] = lbl
         self.update_image(image)
+
+
+    def _apply_visibility(self, qt_widget, props, rule):
+        """
+        display / visibility aren't Qt stylesheet properties, so we
+        apply them with setVisible() and remove them from the rule.
+        """
+        display = props.get("display", "").strip().lower()
+        visibility = props.get("visibility", "").strip().lower()
+
+        hidden = display == "none" or visibility in ("hidden", "collapse")
+        qt_widget.setVisible(not hidden)
+
+        #rule.style.removeProperty("display")
+        #rule.style.removeProperty("visibility")
 
