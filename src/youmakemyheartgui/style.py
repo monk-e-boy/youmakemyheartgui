@@ -1,8 +1,8 @@
 import math
 import re
 
-
 POSITION_KEYS = ("left", "right", "top", "bottom", "width", "height")
+VISIBILITY_KEYS = ("display", "visibility")   # ours, never sent to Qt
 
 # ---------- parsing ----------
 
@@ -124,12 +124,21 @@ def translate_props(props):
 # ---------- positional vs visual ----------
 
 def split_style(style_str):
-    """Returns (layout, qt_props): layout = left/top/right/bottom/width/height in px."""
+    """Returns (layout, qt_props).
+    layout = left/top/right/bottom/width/height in px, plus 'hidden' (bool)."""
     props = translate_props(parse_style(style_str))
     layout = {k: _px(props[k], k) for k in POSITION_KEYS if k in props}
     layout = {k: v for k, v in layout.items() if v is not None}
-    qt_props = {k: v for k, v in props.items() if k not in POSITION_KEYS}
+    layout["hidden"] = _is_hidden(props)
+    qt_props = {k: v for k, v in props.items()
+                if k not in POSITION_KEYS and k not in VISIBILITY_KEYS}
     return layout, qt_props
+
+
+def _is_hidden(props):
+    display = props.get("display", "").strip().lower()
+    visibility = props.get("visibility", "").strip().lower()
+    return display == "none" or visibility in ("hidden", "collapse")
 
 
 def qt_stylesheet(selector, qt_props, extra=""):
@@ -168,3 +177,4 @@ def place(widget, layout, parent_w, parent_h):
     x = parent_w - layout["right"] - w if "right" in layout else layout.get("left", 0)
     y = parent_h - layout["bottom"] - h if "bottom" in layout else layout.get("top", 0)
     widget.move(x, y)
+    widget.setVisible(not layout.get("hidden", False))

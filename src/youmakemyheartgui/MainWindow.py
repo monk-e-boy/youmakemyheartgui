@@ -116,7 +116,8 @@ class MainWindow(QWidget):
         style_for_qt = "\n".join(
             f"{k}: {v};"
             for k, v in props.items()
-            if k not in ("left", "right", "top", "bottom", "width", "height")
+            #if k not in ("left", "right", "top", "bottom", "width", "height")
+            if k not in ("left", "right", "top", "bottom", "height")
         )
 
         inp.setStyleSheet(f"QLineEdit {{ {style_for_qt} }}")
@@ -132,8 +133,9 @@ class MainWindow(QWidget):
             y = self.height() - px("bottom") - inp.height()
         inp.move(x, y)
 
-        if DEBUG:
+        if DEBUG or True:
             print(input.instance_name, "Geometry CHANGED:", x, y)
+            print("input Style:", inp.styleSheet())
 
 
     def update_label(self, label):
@@ -212,8 +214,6 @@ class MainWindow(QWidget):
         base = qt_props.get("background-color", "#4CAF50")
         hover = adjust_colour(base, 0.3)
         pressed = adjust_colour(base, -0.3)
-
-        self._apply_visibility(btn, qt_props, None)
 
         btn.setStyleSheet(qt_stylesheet(
             "QPushButton", qt_props,
@@ -494,19 +494,4 @@ class MainWindow(QWidget):
 
         self.images[image.instance_name] = lbl
         self.update_image(image)
-
-
-    def _apply_visibility(self, qt_widget, props, rule):
-        """
-        display / visibility aren't Qt stylesheet properties, so we
-        apply them with setVisible() and remove them from the rule.
-        """
-        display = props.get("display", "").strip().lower()
-        visibility = props.get("visibility", "").strip().lower()
-
-        hidden = display == "none" or visibility in ("hidden", "collapse")
-        qt_widget.setVisible(not hidden)
-
-        #rule.style.removeProperty("display")
-        #rule.style.removeProperty("visibility")
 
