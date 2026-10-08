@@ -11,9 +11,9 @@ ST_MICHAELS_2 = 6
 
 def update_screen():
     if ship.stash.location == ST_MICHAELS_2:
-            ship.src(f"tests/pirate-tender-towards.png")
-            title.text = "DEATH - YOU ARE EATEN by a 🦈"
-            options.text = "Exits: heaven, hell"
+        ship.src(f"tests/pirate-tender-towards.png")
+        title.text = "DEATH - YOU ARE EATEN by a 🦈"
+        options.text = "Exits: heaven, hell"
 
     if ship.stash.location == ST_MICHAELS:
         ship.src(f"tests/pirate-island-st-michael-anchor.png")

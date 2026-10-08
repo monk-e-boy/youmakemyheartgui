@@ -28,12 +28,21 @@ def go_link_buttons_to_click_handlers(global_vars):
     # 2. Link Buttons to Click Handler Functions
     for btn_name, button_obj in buttons_to_link.items():
         # The expected function name is the button's name plus '_click'
-        handler_name = f"{btn_name}_click" 
-        
-        if handler_name in global_vars and callable(global_vars[handler_name]):
+        handler_name = f"{btn_name}_click"
+        specific = global_vars.get(f"{btn_name}_click")
+        generic = global_vars.get("button_click")
+
+
+        #if handler_name in global_vars and callable(global_vars[handler_name]):
+        if specific and callable(specific):
             handler_func = global_vars[handler_name]
             button_obj.click_handler = handler_func
             print(f"✅ Linked Button '{btn_name}' (Text: '{button_obj._text}') to handler '{handler_name}'.")
+
+        elif generic and callable(generic):
+            button_obj.click_handler = lambda *_, b=button_obj: generic(b)
+            print(f"✅ Linked Button '{btn_name}' (Text: '{button_obj._text}') to generic handler 'button_click'.")
+
         else:
             button_obj.click_handler = lambda name=btn_name, func_name=handler_name: \
                 print(f"❌ Button [{name}] could not find click event:\ndef {func_name}():\n    pass")
