@@ -17,6 +17,7 @@ image
  - do we allow the image to change?
  - check paths and write nice error messages
  - roate?
+ - click event that has x, y pos for where's wally type of game
 
 
 

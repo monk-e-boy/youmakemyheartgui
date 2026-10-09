@@ -40,6 +40,8 @@ def go_link_buttons_to_click_handlers(global_vars):
             print(f"✅ Linked Button '{btn_name}' (Text: '{button_obj._text}') to handler '{handler_name}'.")
 
         elif generic and callable(generic):
+
+            # The default argument avoids the late-binding bug, and *_ absorbs Qt's checked bool
             button_obj.click_handler = lambda *_, b=button_obj: generic(b)
             print(f"✅ Linked Button '{btn_name}' (Text: '{button_obj._text}') to generic handler 'button_click'.")
 

@@ -1,5 +1,7 @@
-from PyQt6.QtWidgets import QWidget, QPushButton, QHBoxLayout, QLabel, QLineEdit
-from PyQt6.QtGui import QPixmap
+import math, re
+from PyQt6.QtWidgets import (QWidget, QPushButton, QHBoxLayout, QLabel, QLineEdit,
+                             QGraphicsView, QGraphicsScene, QFrame)
+from PyQt6.QtGui import QPixmap, QPainter
 from PyQt6.QtCore import Qt
 from .TerminalLabel import TerminalLabel
 from .Grid import GridWidget
@@ -8,6 +10,25 @@ from .style import split_style, qt_stylesheet, place
 from .colour import adjust_colour
 
 DEBUG = False
+
+# rotate(45)
+# rotate(45deg)
+# rotate(-0.25turn)
+# rotate(3.142rad)
+#
+def parse_rotation(props):
+    """Return degrees from 'transform: rotate(45deg)' (also accepts the bare 'rotate:')."""
+    value = props.get("transform", "") or props.get("rotate", "")
+    m = re.search(r"(-?[\d.]+)\s*(deg|rad|turn)?", value)
+    if not m:
+        return 0.0
+    n, unit = float(m.group(1)), m.group(2) or "deg"
+    if unit == "rad":
+        return math.degrees(n)
+    if unit == "turn":
+        return n * 360
+    return n
+
 
 class MainWindow(QWidget):
     def __init__(self):
@@ -37,24 +58,28 @@ class MainWindow(QWidget):
         self.inputs = {}
         self.images = {}
 
-        #self.label = QLabel(self)
-        #pixmap = QPixmap('tests/08-bg1.jpg')
-        #self.label.setPixmap(pixmap)
-        #self.label.setScaledContents(True)
+        # WHY - so we can redraw widgets at angles, capture click and
+        #       drag events etc.
+        # Transparent overlay that holds every widget, so the grid shows through
+        self.scene = QGraphicsScene(self)
+        self.view = QGraphicsView(self.scene, self)
+        self.view.setFrameShape(QFrame.Shape.NoFrame)
+        self.view.setStyleSheet("background: transparent;")
+        self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.view.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.view.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
+        self.view.setRenderHints(QPainter.RenderHint.Antialiasing |
+                                 QPainter.RenderHint.SmoothPixmapTransform)
+        self.proxies = {}
 
-        #self.label.setStyleSheet("QLabel {width: 100px; height: 100px;}")
-        #w = 4800 * 0.1
-        #h = 3600 * 0.1
-        #tmp = f"QLabel {{min-width: {w}px; min-height: {h}px; max-width: {w}px; max-height: {h}x;}}"
-        #print(tmp)
-        #self.label.setStyleSheet(tmp)
-        #self.label.setFixedSize(100, 100)
-        #self.label.setWordWrap(True)
 
-        #self.label.adjustSize()
-        #self.label.move(50, 50)
-        #layout.addWidget(self.label, 2)
-
+    def showEvent(self, e):
+        super().showEvent(e)
+        # the layout has run by now, so cover the grid area exactly
+        # part of the ROTATE / Gravity / Physics
+        g = self.grid.geometry()
+        self.view.setGeometry(g)
+        self.scene.setSceneRect(0, 0, g.width(), g.height())
 
 
     def terminal_append(self, msg):
