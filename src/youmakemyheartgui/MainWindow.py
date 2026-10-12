@@ -1,4 +1,4 @@
-import math, re
+#import math, re
 from PyQt6.QtWidgets import (QWidget, QPushButton, QHBoxLayout, QLabel, QLineEdit,
                              QGraphicsView, QGraphicsScene, QFrame)
 from PyQt6.QtGui import QPixmap, QPainter
@@ -16,18 +16,6 @@ DEBUG = False
 # rotate(-0.25turn)
 # rotate(3.142rad)
 #
-def parse_rotation(props):
-    """Return degrees from 'transform: rotate(45deg)' (also accepts the bare 'rotate:')."""
-    value = props.get("transform", "") or props.get("rotate", "")
-    m = re.search(r"(-?[\d.]+)\s*(deg|rad|turn)?", value)
-    if not m:
-        return 0.0
-    n, unit = float(m.group(1)), m.group(2) or "deg"
-    if unit == "rad":
-        return math.degrees(n)
-    if unit == "turn":
-        return n * 360
-    return n
 
 
 class MainWindow(QWidget):
@@ -43,8 +31,10 @@ class MainWindow(QWidget):
         # left, top, right, bottom
         layout.setContentsMargins(0, 0, 0, 0)
 
-        left = GridWidget()
-        layout.addWidget(left, 2)
+        #left = GridWidget()
+        #layout.addWidget(left, 2)
+        self.grid = GridWidget()
+        layout.addWidget(self.grid, 2)
         #
         # TODO toolbar
         #
@@ -61,6 +51,8 @@ class MainWindow(QWidget):
         # WHY - so we can redraw widgets at angles, capture click and
         #       drag events etc.
         # Transparent overlay that holds every widget, so the grid shows through
+        # It covers the grid only (not the terminal), so the terminal still
+        # gets its own mouse and scroll events.
         self.scene = QGraphicsScene(self)
         self.view = QGraphicsView(self.scene, self)
         self.view.setFrameShape(QFrame.Shape.NoFrame)
@@ -72,14 +64,29 @@ class MainWindow(QWidget):
                                  QPainter.RenderHint.SmoothPixmapTransform)
         self.proxies = {}
 
-
-    def showEvent(self, e):
-        super().showEvent(e)
-        # the layout has run by now, so cover the grid area exactly
-        # part of the ROTATE / Gravity / Physics
+        # run the layout now (the window is fixed size) so the grid has its
+        # real size before any widget is placed - go() adds widgets BEFORE show()
+        # part of the ROTATE / Gravity / Physics are implemented
+        layout.activate()
         g = self.grid.geometry()
         self.view.setGeometry(g)
         self.scene.setSceneRect(0, 0, g.width(), g.height())
+
+
+    def stage_size(self):
+        """Size of the area widgets are placed in (right: / bottom: measure from here)."""
+        r = self.scene.sceneRect()
+        return int(r.width()), int(r.height())
+
+
+    def _add_to_scene(self, obj, qwidget):
+        # no parent on the QWidget: the proxy takes ownership of it
+        self.proxies[obj.instance_name] = self.scene.addWidget(qwidget)
+
+
+    def _place(self, obj, qwidget, layout):
+        w, h = self.stage_size()
+        place(qwidget, layout, w, h, self.proxies[obj.instance_name])
 
 
     def terminal_append(self, msg):
@@ -98,6 +105,7 @@ class MainWindow(QWidget):
         btn.adjustSize()
         self.update_button(button)
 
+
     def change_text_label(self, label):
         lbl = self.labels[label.instance_name]
         lbl.setText(label.text)
@@ -105,6 +113,15 @@ class MainWindow(QWidget):
 
 
     def update_input(self, input):
+        inp = self.inputs[input.instance_name]
+
+        layout, qt_props = split_style(input.style)
+        inp.setStyleSheet(qt_stylesheet("QLineEdit", qt_props))
+
+        self._place(input, inp, layout)
+
+
+    def update_input_old(self, input):
         inp = self.inputs[input.instance_name]
         # Parse CSS
         sheet = cssutils.parseString("QLineEdit   {" + str(input.style) +"}") ## TODO why do I have to do str() here?
@@ -172,7 +189,8 @@ class MainWindow(QWidget):
         # wrap only if the student gave a width; otherwise one line, sized to the text
         lbl.setWordWrap("width" in layout)
 
-        place(lbl, layout, self.width(), self.height())
+        # place(lbl, layout, self.width(), self.height())
+        self._place(label, lbl, layout)
 
 
 
@@ -245,8 +263,10 @@ class MainWindow(QWidget):
             f"QPushButton:hover {{ background-color: {hover}; }}\n"
             f"QPushButton:pressed {{ background-color: {pressed}; }}"))
 
-        place(btn, layout, self.width(), self.height())
-        btn.adjustSize()
+        # place(btn, layout, self.width(), self.height())
+        # btn.adjustSize()
+
+        self._place(button, btn, layout)
 
         if DEBUG:
             print("BUTTON Style:", btn.styleSheet())
@@ -377,7 +397,9 @@ class MainWindow(QWidget):
         # the text has changed, or a style has changed)
         button.container = self
 
-        btn = QPushButton(button.text, self)
+        #btn = QPushButton(button.text, self)
+        btn = QPushButton(button.text)
+
         # make the mouse a pointing hand on mouse-hover
         btn.setCursor(Qt.CursorShape.PointingHandCursor)
         btn.clicked.connect(button.click_handler)
@@ -391,17 +413,22 @@ class MainWindow(QWidget):
         btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
 
         self.buttons[button.instance_name] = btn
+        self._add_to_scene(button, btn)
         self.update_button(button)
+
 
     def add_label(self, label):
         # tell the button who we are so it can tell us things (e.g.
         # the text has changed, or a style has changed)
         label.container = self
 
-        lbl = QLabel(label.text, self)
+        # lbl = QLabel(label.text, self)
+        lbl = QLabel(label.text)
 
         self.labels[label.instance_name] = lbl
+        self._add_to_scene(label, lbl)
         self.update_label(label)
+
 
     def add_input(self, input):
         # tell the button who we are so it can tell us things (e.g.
@@ -409,7 +436,8 @@ class MainWindow(QWidget):
         input.container = self
 
         # inp = QLineEdit(input.text, self)
-        inp = QLineEdit("", self)
+        # inp = QLineEdit("", self)
+        inp = QLineEdit("")
         # we need to tell our Widget that the text has changed
         inp.textChanged.connect(input.internal_text_changed_handler)
         
@@ -422,6 +450,7 @@ class MainWindow(QWidget):
             inp.returnPressed.connect(input.return_pressed_handler)
 
         self.inputs[input.instance_name] = inp
+        self._add_to_scene(input, inp)
         self.update_input(input)
 
 
@@ -436,9 +465,31 @@ class MainWindow(QWidget):
         #self.images[image.instance_name] = lbl
         #self.update_image(image)
 
+        self.update_image(image)
 
 
     def update_image(self, image):
+        #
+        # This is a label that contains an image
+        # it's just the way QT does things
+        #
+        img = self.images[image.instance_name]
+
+        layout, qt_props = split_style(image.style)
+
+        #
+        # TODO filter out all the stuff we don't want to do in the image
+        #      background colours, borders, margins, etc
+        #      if the student wants to do those things, they should alter
+        #      the image in an image editor
+        #
+        # TODO: warn the user that hover and click styles are not supported
+        #
+        img.setStyleSheet(qt_stylesheet("QLabel", qt_props))
+        self._place(image, img, layout)
+
+
+    def update_image_old(self, image):
 
         #
         # This is a label that contains an image
@@ -512,11 +563,12 @@ class MainWindow(QWidget):
     def add_image(self, image):
         image.container = self
 
-        lbl = QLabel(self)
+        lbl = QLabel()
         pixmap = QPixmap(image.text)
         lbl.setPixmap(pixmap)
         lbl.setScaledContents(True)
 
         self.images[image.instance_name] = lbl
+        self._add_to_scene(image, lbl)
         self.update_image(image)
 

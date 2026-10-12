@@ -164,3 +164,9 @@ def go():
         f = next(iter(win.inputs))
         win.inputs[f].setFocus()
     app.exec()
+
+    # the widgets live in a QGraphicsScene now: delete them while the
+    # QApplication still exists, or Python tears them down in the wrong
+    # order at exit and can segfault
+    win.view.setScene(None)
+    win.scene.clear()

@@ -3,6 +3,8 @@ import re
 
 POSITION_KEYS = ("left", "right", "top", "bottom", "width", "height")
 VISIBILITY_KEYS = ("display", "visibility")   # ours, never sent to Qt
+TRANSFORM_KEYS = ("transform", "rotate")      # ours, never sent to Qt
+
 
 # ---------- parsing ----------
 
@@ -121,17 +123,41 @@ def translate_props(props):
         out[k] = v
     return out
 
+
+# ---------- rotation ----------
+
+_ANGLE = r"(-?\d*\.?\d+)\s*(deg|rad|turn|grad)?"
+
+def parse_rotation(props):
+    """Degrees, from 'transform: rotate(45deg)' or the shorthand 'rotate: 45deg'.
+    Accepts deg, rad, turn, grad; a bare number means degrees. 0 if absent."""
+    value = props.get("transform", "")
+    m = re.search(r"rotate\(\s*" + _ANGLE + r"\s*\)", value, re.IGNORECASE)
+    if not m and value.strip():
+        print(f"⚠️  transform: only rotate() is supported, got {value!r}")
+    if not m:
+        m = re.fullmatch(_ANGLE, props.get("rotate", "").strip(), re.IGNORECASE)
+    if not m:
+        return 0.0
+    n, unit = float(m.group(1)), (m.group(2) or "deg").lower()
+    return {"deg": n, "rad": math.degrees(n), "turn": n * 360, "grad": n * 0.9}[unit]
+
+
 # ---------- positional vs visual ----------
 
 def split_style(style_str):
     """Returns (layout, qt_props).
-    layout = left/top/right/bottom/width/height in px, plus 'hidden' (bool)."""
+    layout = left/top/right/bottom/width/height in px, plus 'hidden' (bool)
+    and 'rotate' (degrees)."""
     props = translate_props(parse_style(style_str))
     layout = {k: _px(props[k], k) for k in POSITION_KEYS if k in props}
     layout = {k: v for k, v in layout.items() if v is not None}
     layout["hidden"] = _is_hidden(props)
+    layout["rotate"] = parse_rotation(props)
     qt_props = {k: v for k, v in props.items()
-                if k not in POSITION_KEYS and k not in VISIBILITY_KEYS}
+                if k not in POSITION_KEYS
+                and k not in VISIBILITY_KEYS
+                and k not in TRANSFORM_KEYS}
     return layout, qt_props
 
 
@@ -157,8 +183,11 @@ def _px(value, key=""):
 #
 # TODO - dunno if I like this function being in this library.
 #
-def place(widget, layout, parent_w, parent_h):
-    """Size first, then position, so right/bottom can use the real size."""
+def place(widget, layout, parent_w, parent_h, proxy=None):
+    """Size first, then position, so right/bottom can use the real size.
+    Pass the QGraphicsProxyWidget as `proxy` when the widget lives in the
+    scene: position, rotation and visibility then go through the proxy."""
+
     # undo any earlier setFixedSize so adjustSize() can work again
     widget.setMinimumSize(0, 0)
     widget.setMaximumSize(16777215, 16777215)
@@ -176,5 +205,17 @@ def place(widget, layout, parent_w, parent_h):
 
     x = parent_w - layout["right"] - w if "right" in layout else layout.get("left", 0)
     y = parent_h - layout["bottom"] - h if "bottom" in layout else layout.get("top", 0)
-    widget.move(x, y)
-    widget.setVisible(not layout.get("hidden", False))
+    #widget.move(x, y)
+    #widget.setVisible(not layout.get("hidden", False))
+    
+    visible = not layout.get("hidden", False)
+
+    if proxy is None:
+        widget.move(x, y)
+        widget.setVisible(visible)
+    else:
+        # right/bottom use the un-rotated box, like CSS does
+        proxy.setPos(x, y)
+        proxy.setTransformOriginPoint(w / 2, h / 2)   # rotate about the centre
+        proxy.setRotation(layout.get("rotate", 0.0))
+        proxy.setVisible(visible)
