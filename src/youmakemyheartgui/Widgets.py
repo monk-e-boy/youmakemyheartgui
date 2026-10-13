@@ -1,3 +1,7 @@
+import os
+import traceback
+from PyQt6.QtCore import QTimer
+
 
 #
 # TODO: fix this turd
@@ -33,6 +37,68 @@ class HoverStyleProxy:
 
 class UserData(object):
     pass
+
+
+# TODO (future): click / input handlers are NOT protected like the timer is.
+# PyQt6 aborts the whole app if a handler raises an exception, so a typo in
+# a b1_click() makes the window vanish with no explanation on screen.
+# Ideas for when we have tested this with real students:
+#   - set sys.excepthook in __init__.py (after the PrintCapture import) to
+#     print a friendly error to the console pane, or
+#   - wrap the handlers in MainWindow.add_button / add_input in a safe_call().
+class Timer:
+    def __init__(self, milliseconds=1000):
+        self.instance_name = None   # set by go(), e.g. 'spinner'
+        self.tick_handler = None    # set by go(), e.g. spinner_tick
+        self.state = UserData()
+        self.stash = UserData()
+
+        self._qtimer = QTimer()
+        self._qtimer.setInterval(int(milliseconds))
+        self._qtimer.timeout.connect(self._tick)
+
+    def _tick(self):
+        if self.tick_handler is None:
+            return
+        try:
+            self.tick_handler()
+        except Exception as e:
+            # find the innermost line in the STUDENT'S file, not our library
+            library_dir = os.path.dirname(os.path.abspath(__file__))
+            where = ""
+            for frame in reversed(traceback.extract_tb(e.__traceback__)):
+                if not os.path.abspath(frame.filename).startswith(library_dir):
+                    where = f" (line {frame.lineno} of {os.path.basename(frame.filename)})"
+                    break
+            print(f"❌ Error in {self.instance_name}_tick{where}:\n   {type(e).__name__}: {e}")
+            # stop, otherwise this message would repeat many times a second
+            self.stop()
+            print(f"⏹ Timer '{self.instance_name}' stopped because of the error above.")
+
+    def start(self):
+        self._qtimer.start()
+
+    def stop(self):
+        self._qtimer.stop()
+
+    def toggle(self):
+        if self.running:
+            self.stop()
+        else:
+            self.start()
+
+    @property
+    def running(self):
+        return self._qtimer.isActive()
+
+    # students can change the speed while it runs: spinner.milliseconds = 10
+    @property
+    def milliseconds(self):
+        return self._qtimer.interval()
+
+    @milliseconds.setter
+    def milliseconds(self, ms):
+        self._qtimer.setInterval(int(ms))
 
 
 class Widget:

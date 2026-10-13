@@ -2,7 +2,7 @@
 
 from PyQt6.QtWidgets import QApplication
 from .MainWindow import MainWindow
-from .Widgets import Button, Label, Input, Image, Panel
+from .Widgets import Button, Label, Input, Image, Panel, Timer
 import inspect
 import sys
 
@@ -93,6 +93,20 @@ def go_link_inputs_to_handlers(global_vars):
         #    print(f"❌ Input [{name}] could not find text changed events:\n{func_name}")
 
 
+def go_link_timers(global_vars):
+    for name, value in global_vars.copy().items():
+        if isinstance(value, Timer):
+            value.instance_name = name
+            handler_name = f"{name}_tick"
+
+            if handler_name in global_vars and callable(global_vars[handler_name]):
+                value.tick_handler = global_vars[handler_name]
+                print(f"✅ Linked Timer '{name}' to handler '{handler_name}'.")
+            else:
+                print(f"❌ Timer '{name}' does NOT have a tick event: '{handler_name}'.\n"
+                      f"def {handler_name}():\n    pass")
+
+
 def go_part_2(global_vars):
     # PANELS first: they sit behind everything else
     panels_to_link = {}
@@ -163,6 +177,7 @@ def go():
 
     go_link_buttons_to_click_handlers(global_vars)
     go_link_inputs_to_handlers(global_vars)
+    go_link_timers(global_vars)
     go_part_2(global_vars)
     #
     win.show()

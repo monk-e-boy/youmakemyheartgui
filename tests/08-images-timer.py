@@ -4,8 +4,7 @@
 
 # youmakemy-♡-gui
 from youmakemyheartgui import go
-from youmakemyheartgui.Widgets import Button, Label, Input, Image
-from PyQt6.QtCore import QTimer
+from youmakemyheartgui.Widgets import Button, Label, Image, Timer
 
 
 msg = Label("The poets have been ominously silent")
@@ -34,22 +33,14 @@ spin.style <<= "left: 590px; top: 550px; font-size: 28px; padding: 10px;"
 spin.style <<= "background-color: #c62828; background: linear-gradient(#ff5252, #8b0000);"
 spin.style <<= "color: #ffeb3b; font-weight: bold; border: 3px solid #ffeb3b; border-radius: 10px;"
 
+spinner = Timer(40)
 
-def hello():
-    smile.stash.angle += 2
+def spinner_tick():
+    smile.stash.angle = (smile.stash.angle + 2) % 360
     smile.style <<= f"transform: rotate({smile.stash.angle}deg);"
 
-
 def spin_click():
-    if timer.isActive():
-        timer.stop()
-    else:
-        timer.start(40)
-
-
-# creating a timer object
-timer = QTimer()
-timer.timeout.connect(hello)
+    spinner.toggle()
 
 
 go()
