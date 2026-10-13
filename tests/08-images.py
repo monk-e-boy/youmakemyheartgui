@@ -15,15 +15,15 @@ msg.style <<= "top:250px; left: 50px; width: 300px; min-width: 300px; max-width:
 w = 4800 * 0.1
 h = 3600 * 0.1
 
-#bg = Image("tests/08-bg1.jpg")
-#bg.style <<= f"width: {w}px; height: {h}px;"
+bg = Image("tests/08-bg1.jpg")
+bg.style <<= f"width: {w}px; height: {h}px;"
 
 
 w = 4800 * 0.05
 h = 3600 * 0.05
 
-#bg2 = Image("tests/08-bg1.jpg")
-#bg2.style <<= f"top: 400px; width: {w}px; height: {h}px;"
+bg2 = Image("tests/08-bg1.jpg")
+bg2.style <<= f"top: 400px; width: {w}px; height: {h}px;"
 
 smile = Image("tests/smile-2.png")
 smile.style <<= f"top: 400px; left: 300px;"

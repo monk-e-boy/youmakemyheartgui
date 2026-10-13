@@ -29,40 +29,76 @@ b3 = Button("3")
 
 # https://htmlcolorcodes.com/color-chart/
 ba = Button("A")
-ba.style <<= "left: 50px; top: 350px; width: 50px; background-color: #FB2C36;"
+ba.style <<= (
+    "left: 50px; top: 350px; background-color: #FB2C36;"
+    "width: 50px; border: 1px solid #b8b8b8; border-radius: 3px;"
+)
 
 bb = Button("B")
-bb.style <<= "left: 100px; top: 350px; width: 50px; background-color: #FF692A;"
+bb.style <<= (
+    "left: 100px; top: 350px; background-color: #FF692A;"
+    "width: 50px; border: 1px solid #b8b8b8; border-radius: 3px;"
+)
 
 bc = Button("C")
-bc.style <<= "left: 150px; top: 350px; width: 50px; background-color: #FE9A37;"
+bc.style <<= (
+    "left: 150px; top: 350px; background-color: #FE9A37;"
+    "width: 50px; border: 1px solid #b8b8b8; border-radius: 3px;"
+)
 
 bd = Button("D")
-bd.style <<= "left: 200px; top: 350px; width: 50px; background-color: #F0B13B;"
+bd.style <<= (
+    "left: 200px; top: 350px; background-color: #F0B13B;"
+    "width: 50px; border: 1px solid #b8b8b8; border-radius: 3px;"
+)
 
 be = Button("E")
-be.style <<= "left: 250px; top: 350px; width: 50px; background-color: #7CCF35;"
+be.style <<= (
+    "left: 250px; top: 350px; background-color: #7CCF35;"
+    "width: 50px; border: 1px solid #b8b8b8; border-radius: 3px;"
+)
 
 bf = Button("F")
-bf.style <<= "left: 300px; top: 350px; width: 50px; background-color: #31C950;"
+bf.style <<= (
+    "left: 300px; top: 350px; background-color: #31C950;"
+    "width: 50px; border: 1px solid #b8b8b8; border-radius: 3px;"
+)
 
 bg = Button("G")
-bg.style <<= "left: 350px; top: 350px; width: 50px; background-color: #37BC7D;"
+bg.style <<= (
+    "left: 350px; top: 350px; background-color: #37BC7D;"
+    "width: 50px; border: 1px solid #b8b8b8; border-radius: 3px;"
+)
 
 bh = Button("H")
-bh.style <<= "left: 400px; top: 350px; width: 50px; background-color: #36BBA7;"
+bh.style <<= (
+    "left: 400px; top: 350px; background-color: #36BBA7;"
+    "width: 50px; border: 1px solid #b8b8b8; border-radius: 3px;"
+)
 
 bi = Button("I")
-bi.style <<= "left: 450px; top: 350px; width: 50px; background-color: #3BB8DB;"
+bi.style <<= (
+    "left: 450px; top: 350px; background-color: #3BB8DB;"
+    "width: 50px; border: 1px solid #b8b8b8; border-radius: 3px;"
+)
 
 bj = Button("J")
-bj.style <<= "left: 500px; top: 350px; width: 50px; background-color: #34A6F4;"
+bj.style <<= (
+    "left: 500px; top: 350px; background-color: #34A6F4;"
+    "width: 50px; border: 1px solid #b8b8b8; border-radius: 3px;"
+)
 
 bk = Button("K")
-bk.style <<= "left: 550px; top: 350px; width: 50px; background-color: #2B7FFF;"
+bk.style <<= (
+    "left: 550px; top: 350px; background-color: #2B7FFF;"
+    "width: 50px; border: 1px solid #b8b8b8; border-radius: 3px;"
+)
 
 bl = Button("L")
-bl.style <<= "left: 600px; top: 350px; width: 50px; background-color: #615FFF;"
+bl.style <<= (
+    "left: 600px; top: 350px; background-color: #615FFF;"
+    "width: 50px; border: 1px solid #b8b8b8; border-radius: 3px;"
+)
 
 
 #

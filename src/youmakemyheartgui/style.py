@@ -229,6 +229,11 @@ def place(widget, layout, parent_w, parent_h, proxy=None):
         widget.move(x, y)
         widget.setVisible(visible)
     else:
+        # make the proxy match the widget. It does not always shrink by itself,
+        # and the leftover area gets painted as a grey box over the grid
+        proxy.setMinimumSize(0, 0)
+        proxy.resize(w, h)
+
         # right/bottom use the un-rotated box, like CSS does
         proxy.setPos(x, y)
         proxy.setTransformOriginPoint(w / 2, h / 2)   # rotate about the centre
