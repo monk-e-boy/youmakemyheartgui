@@ -2,7 +2,7 @@
 
 from PyQt6.QtWidgets import QApplication
 from .MainWindow import MainWindow
-from .Widgets import Button, Label, Input, Image
+from .Widgets import Button, Label, Input, Image, Panel
 import inspect
 import sys
 
@@ -92,7 +92,18 @@ def go_link_inputs_to_handlers(global_vars):
         #        print(f"❌ Input [{name}] could not find text changed events:\n{func_name}")
         #    print(f"❌ Input [{name}] could not find text changed events:\n{func_name}")
 
+
 def go_part_2(global_vars):
+    # PANELS first: they sit behind everything else
+    panels_to_link = {}
+    for name, value in global_vars.copy().items():
+        if isinstance(value, Panel):
+            value.instance_name = name
+            panels_to_link[name] = value
+
+    for order, key in enumerate(panels_to_link):
+        win.add_panel(panels_to_link[key], order)
+    
     # BUTTONS
     buttons_to_link = {}
     for name, value in global_vars.copy().items():

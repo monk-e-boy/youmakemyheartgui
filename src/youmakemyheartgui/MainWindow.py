@@ -1,13 +1,14 @@
 #import math, re
 from PyQt6.QtWidgets import (QWidget, QPushButton, QHBoxLayout, QLabel, QLineEdit,
                              QGraphicsView, QGraphicsScene, QFrame)
-from PyQt6.QtGui import QPixmap, QPainter
+from PyQt6.QtGui import QPixmap, QPainter, QColor
 from PyQt6.QtCore import Qt
 from .TerminalLabel import TerminalLabel
 from .Grid import GridWidget
 import cssutils
 from .style import split_style, qt_stylesheet, place, with_box_defaults
 from .colour import adjust_colour
+from .Panel import PanelFrame, parse_bevel, DEFAULT_FACE
 
 DEBUG = False
 
@@ -47,6 +48,7 @@ class MainWindow(QWidget):
         self.labels = {}
         self.inputs = {}
         self.images = {}
+        self.panels = {}
 
         # WHY - so we can redraw widgets at angles, capture click and
         #       drag events etc.
@@ -572,4 +574,32 @@ class MainWindow(QWidget):
         self.images[image.instance_name] = lbl
         self._add_to_scene(image, lbl)
         self.update_image(image)
+
+
+    def add_panel(self, panel, order=0):
+        panel.container = self
+        frame = PanelFrame()
+        self.panels[panel.instance_name] = frame
+        self._add_to_scene(panel, frame)
+        # panels live behind every other widget (which sit at z = 0);
+        # a panel defined later in the script is drawn on top of earlier ones
+        self.proxies[panel.instance_name].setZValue(-10000 + order)
+        self.update_panel(panel)
+
+
+    def update_panel(self, panel):
+        frame = self.panels[panel.instance_name]
+        layout, qt_props = split_style(panel.style)
+        style, width, border_colour, qt_props = parse_bevel(qt_props)
+
+        # the 3D edge is derived from border-color, else the face colour
+        base = border_colour
+        if base is None:
+            base = QColor(qt_props.get("background-color", DEFAULT_FACE))
+            if not base.isValid():
+                base = QColor(DEFAULT_FACE)   # gradients, bad colour names
+        frame.set_bevel(style, width, base)
+
+        frame.setStyleSheet(qt_stylesheet("QFrame", qt_props))
+        self._place(panel, frame, layout)
 

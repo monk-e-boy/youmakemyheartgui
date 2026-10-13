@@ -251,6 +251,25 @@ class Image(Widget):
             self.container.update_image(self)
 
 
+class Panel(Widget):
+    """A styled rectangle drawn BEHIND every other widget (Windows NT style
+    by default). Later panels are drawn on top of earlier ones."""
+    def __init__(self):
+        super().__init__("")
+        self.style <<= "background-color: #c0c0c0;"
+        self.style <<= "border-style: outset;"
+        self.style <<= "border-width: 2px;"
+        self.style <<= "left: 20px;"
+        self.style <<= "top: 20px;"
+        self.style <<= "width: 200px;"
+        self.style <<= "height: 120px;"
+
+    def add_style(self, s):
+        super().add_style(s)
+        if self.container:
+            self.container.update_panel(self)
+
+
 #
 #             +------------+-----+
 # enter name: | Alice      | Go! |
