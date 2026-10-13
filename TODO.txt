@@ -1,7 +1,3 @@
-https://www.curvedream.co.uk/colorful-vintage-patchwork-sunburst-pattern-turtleneck-long-sleeve-comfy-sweater-cdmt002.html
-https://www.next.co.uk/style/su766047/h56944 
-
-
 04-test-inputs
 - return clear input
 - button to clear
