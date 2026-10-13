@@ -6,7 +6,7 @@ from PyQt6.QtCore import Qt
 from .TerminalLabel import TerminalLabel
 from .Grid import GridWidget
 import cssutils
-from .style import split_style, qt_stylesheet, place
+from .style import split_style, qt_stylesheet, place, with_box_defaults
 from .colour import adjust_colour
 
 DEBUG = False
@@ -252,6 +252,7 @@ class MainWindow(QWidget):
     def update_button(self, button):
         btn = self.buttons[button.instance_name]
         layout, qt_props = split_style(button.style)
+        qt_props = with_box_defaults(qt_props)
 
         # hover/pressed need a *colour*; if there's a gradient, use its first stop
         base = qt_props.get("background-color", "#4CAF50")
@@ -397,8 +398,8 @@ class MainWindow(QWidget):
         # the text has changed, or a style has changed)
         button.container = self
 
-        #btn = QPushButton(button.text, self)
         btn = QPushButton(button.text)
+        btn.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 
         # make the mouse a pointing hand on mouse-hover
         btn.setCursor(Qt.CursorShape.PointingHandCursor)

@@ -167,6 +167,21 @@ def _is_hidden(props):
     return display == "none" or visibility in ("hidden", "collapse")
 
 
+def with_box_defaults(qt_props, background="#f5f5f5", border="1px solid #b8b8b8"):
+    """Qt drops the native look as soon as a stylesheet sets a border or background
+    (so `border-radius: 15px` alone gives a button with no body at all).
+    If the student touched either, fill in whichever one they didn't."""
+    if not any(k.startswith(("border", "background")) for k in qt_props):
+        return qt_props                      # untouched: keep the native look
+    out = {}
+    if "background" not in qt_props and "background-color" not in qt_props:
+        out["background-color"] = background
+    if not any(k.startswith("border") and k != "border-radius" for k in qt_props):
+        out["border"] = border
+    out.update(qt_props)                     # the student's values always win
+    return out
+
+
 def qt_stylesheet(selector, qt_props, extra=""):
     body = "\n".join(f"{k}: {v};" for k, v in qt_props.items())
     return f"{selector} {{ {body} }}\n{extra}"
