@@ -11,29 +11,29 @@ ST_MICHAELS_2 = 6
 
 def update_screen():
     if ship.stash.location == ST_MICHAELS_2:
-        ship.src(f"tests/pirate-tender-towards.png")
+        ship.src(f"tests/pirate-tender-towards.v3.png")
         title.text = "DEATH - YOU ARE EATEN by a 🦈"
         options.text = "Exits: heaven, hell"
 
     if ship.stash.location == ST_MICHAELS:
-        ship.src(f"tests/pirate-island-st-michael-anchor.png")
+        ship.src(f"tests/pirate-island-st-michael-anchor.v2.png")
         title.text = "You see: An island. There is a whisp of smoke."
         options.text = "Exits: set sail, row to island"
 
     if ship.stash.location == CROWS_NEST:
-        ship.src(f"tests/pirate-crows-nest-1.png")
+        ship.src(f"tests/pirate-crows-nest-1v3.png")
         title.text = "You see: The crows nest. There is something on the horizon!"
         options.text = "Exits: down, left, right"
         # tell the ship the user has seen the enemy!!
         ship.stash.seen_island = True
 
     if ship.stash.location == CROWS_NEST_LEFT:
-        ship.src(f"tests/pirate-crows-nest-3.png")
+        ship.src(f"tests/pirate-crows-nest-3v2.png")
         title.text = "You see: The crows nest port side. You see nothing."
         options.text = "Exits: right"
 
     if ship.stash.location == CROWS_NEST_RIGHT:
-        ship.src(f"tests/pirate-crows-nest-2.png")
+        ship.src(f"tests/pirate-crows-nest-2v2.png")
         title.text = "You see: The crows nest startboard side. There is something on the horizon!"
         options.text = "Exits: left"
         # tell the ship the user has seen the enemy!!
@@ -41,7 +41,7 @@ def update_screen():
 
     if ship.stash.location == SHIP_OVERVIEW:
         # CROWS NEST 1
-        ship.src(f"tests/pirate-ship-2.png")
+        ship.src(f"tests/pirate-ship-3.png")
         title.text = "You see: Your pirate ship"
         options.text = "Exits: crows nest"
 

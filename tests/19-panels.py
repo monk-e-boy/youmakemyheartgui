@@ -1,6 +1,7 @@
 # youmakemy-♡-gui
 from youmakemyheartgui import go
-from youmakemyheartgui.Widgets import Button, Label, Input, Panel
+from youmakemyheartgui.Widgets import Button, Label, Panel
+import random
 
 # a classic raised grey panel (the defaults)
 window = Panel()
@@ -33,6 +34,5 @@ b.style <<= (
 )
 
 def b_click():
-    msg.text += "ok "
-
+    msg.text += random.choice(["OK",":)","Yes!","kk","ping","pong"]) + " "
 go()
