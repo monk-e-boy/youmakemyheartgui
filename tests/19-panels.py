@@ -35,4 +35,6 @@ b.style <<= (
 
 def b_click():
     msg.text += random.choice(["OK",":)","Yes!","kk","ping","pong"]) + " "
+
+
 go()
