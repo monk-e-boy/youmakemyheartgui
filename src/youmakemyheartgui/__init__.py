@@ -5,6 +5,7 @@ from .MainWindow import MainWindow
 from .Widgets import Button, Label, Input, Image, Panel, Timer
 import inspect
 import sys
+import os, traceback
 
 #
 # set up some global variables
@@ -31,10 +32,11 @@ def go_link_buttons_to_click_handlers(global_vars):
         handler_name = f"{btn_name}_click"
         specific = global_vars.get(f"{btn_name}_click")
         generic = global_vars.get("button_click")
-
-
-        #if handler_name in global_vars and callable(global_vars[handler_name]):
+        folder = os.path.dirname(os.path.abspath(global_vars["__file__"]))
+        file_path = os.path.join(folder, f"{btn_name}_click.py")
+        
         if specific and callable(specific):
+            
             handler_func = global_vars[handler_name]
             button_obj.click_handler = handler_func
             print(f"✅ Linked Button '{btn_name}' (Text: '{button_obj._text}') to handler '{handler_name}'.")
@@ -45,7 +47,13 @@ def go_link_buttons_to_click_handlers(global_vars):
             button_obj.click_handler = lambda *_, b=button_obj: generic(b)
             print(f"✅ Linked Button '{btn_name}' (Text: '{button_obj._text}') to generic handler 'button_click'.")
 
+        elif os.path.exists(file_path):
+
+            button_obj.click_handler = _make_file_handler(file_path, global_vars)
+            print(f"✅ Linked Button '{btn_name}' to file '{btn_name}_click.py'.")
+
         else:
+            
             button_obj.click_handler = lambda name=btn_name, func_name=handler_name: \
                 print(f"❌ Button [{name}] could not find click event:\ndef {func_name}():\n    pass")
             print(f"❌ Button '{btn_name}' does NOT have a click event: '{handler_name}'.")
@@ -105,6 +113,18 @@ def go_link_timers(global_vars):
             else:
                 print(f"❌ Timer '{name}' does NOT have a tick event: '{handler_name}'.\n"
                       f"def {handler_name}():\n    pass")
+
+
+def _make_file_handler(path, global_vars):
+    def run():
+        try:
+            with open(path, encoding="utf-8") as f:
+                source = f.read()               # re-read every click
+            exec(compile(source, path, "exec"), global_vars)
+        except Exception:
+            # PyQt aborts the app on exceptions inside slots, so catch everything
+            print("❌ Error in " + os.path.basename(path) + ":\n" + traceback.format_exc())
+    return run
 
 
 def go_part_2(global_vars):
