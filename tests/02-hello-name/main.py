@@ -14,6 +14,4 @@ i.style <<= "left: 320px; top: 100px; padding: 8px;"
 message = Button("Click me!")
 message.style <<= "left: 50px; top: 150px; padding: 20px;"
 
-points = 0
-
 go()
