@@ -125,6 +125,9 @@ class Widget:
         self.stash = UserData()
         self.inventory = UserData()
 
+        self.fixed = False   # True = physics won't move us (ramps, platforms, control buttons)
+
+
     @property
     def style(self):
         return self._style_proxy

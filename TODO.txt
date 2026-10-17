@@ -1,3 +1,7 @@
+have "pages" of widgets that can be shown and hidden
+have 2D list to grid of buttons examples (e.g. inventory)
+tween fallen items back to their original positions
+
 04-test-inputs
 - return clear input
 - button to clear

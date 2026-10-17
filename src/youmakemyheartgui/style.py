@@ -198,7 +198,9 @@ def _px(value, key=""):
 #
 # TODO - dunno if I like this function being in this library.
 #
-def place(widget, layout, parent_w, parent_h, proxy=None):
+
+#def place(widget, layout, parent_w, parent_h, proxy=None):
+def place(widget, layout, parent_w, parent_h, proxy=None, physics_on=False):
     """Size first, then position, so right/bottom can use the real size.
     Pass the QGraphicsProxyWidget as `proxy` when the widget lives in the
     scene: position, rotation and visibility then go through the proxy."""
@@ -235,7 +237,11 @@ def place(widget, layout, parent_w, parent_h, proxy=None):
         proxy.resize(w, h)
 
         # right/bottom use the un-rotated box, like CSS does
-        proxy.setPos(x, y)
+        if not physics_on:
+            proxy.setPos(x, y)
+        
         proxy.setTransformOriginPoint(w / 2, h / 2)   # rotate about the centre
-        proxy.setRotation(layout.get("rotate", 0.0))
+        
+        if not physics_on:
+            proxy.setRotation(layout.get("rotate", 0.0))
         proxy.setVisible(visible)

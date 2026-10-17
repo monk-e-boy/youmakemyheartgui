@@ -36,7 +36,7 @@ def go_link_buttons_to_click_handlers(global_vars):
         file_path = os.path.join(folder, f"{btn_name}_click.py")
         
         if specific and callable(specific):
-            
+
             handler_func = global_vars[handler_name]
             button_obj.click_handler = handler_func
             print(f"✅ Linked Button '{btn_name}' (Text: '{button_obj._text}') to handler '{handler_name}'.")
@@ -185,6 +185,19 @@ def go_part_2(global_vars):
     for key in inputs_to_link:
         value = inputs_to_link[key]
         win.add_input(value)
+
+
+def gravity(on=True):
+    """Start (or pause) gravity. Call this from a click handler."""
+    if on:
+        win.physics.start()
+    else:
+        win.physics.pause()
+
+
+def gravity_step():
+    """Run ONE tick of physics. Handy for seeing what happens frame by frame."""
+    win.physics.step()
 
 
 def go():

@@ -9,6 +9,7 @@ import cssutils
 from .style import split_style, qt_stylesheet, place, with_box_defaults
 from .colour import adjust_colour
 from .Panel import PanelFrame, parse_bevel, DEFAULT_FACE
+from .Physics import Physics
 
 DEBUG = False
 
@@ -65,6 +66,8 @@ class MainWindow(QWidget):
         self.view.setRenderHints(QPainter.RenderHint.Antialiasing |
                                  QPainter.RenderHint.SmoothPixmapTransform)
         self.proxies = {}
+        self.objs = {}   # instance_name -> the student's widget object
+        self.physics = Physics(self)
 
         # run the layout now (the window is fixed size) so the grid has its
         # real size before any widget is placed - go() adds widgets BEFORE show()
@@ -84,11 +87,14 @@ class MainWindow(QWidget):
     def _add_to_scene(self, obj, qwidget):
         # no parent on the QWidget: the proxy takes ownership of it
         self.proxies[obj.instance_name] = self.scene.addWidget(qwidget)
+        self.objs[obj.instance_name] = obj
 
 
     def _place(self, obj, qwidget, layout):
         w, h = self.stage_size()
-        place(qwidget, layout, w, h, self.proxies[obj.instance_name])
+        # place(qwidget, layout, w, h, self.proxies[obj.instance_name])
+        place(qwidget, layout, w, h, self.proxies[obj.instance_name],
+              physics_on=self.physics.active)
 
 
     def terminal_append(self, msg):
