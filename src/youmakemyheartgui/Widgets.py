@@ -241,6 +241,37 @@ class Input(Widget):
             self.container.update_input(self)
 
 
+class PasswordInput(Input):
+    """An Input that hides what is typed behind a character (a dot by default).
+    password.text still gives you the REAL text.
+
+        password = PasswordInput("")           # dots
+        password = PasswordInput("", "♡")      # hearts
+        password.char = "★"                    # change it while running
+    """
+    def __init__(self, text="", char="●"):
+        super().__init__(text)
+        self._char = self._check_char(char)
+
+    @property
+    def char(self):
+        return self._char
+
+    @char.setter
+    def char(self, char):
+        self._char = self._check_char(char)
+        if self.container:
+            self.container.update_input(self)
+
+    def _check_char(self, char):
+        # Qt can only draw ONE simple character here (not most emoji)
+        if isinstance(char, str) and len(char) == 1 and ord(char) <= 0xFFFF:
+            return char
+        print(f"⚠️  PasswordInput: {char!r} won't work, it needs ONE simple "
+              f"character like ● ♡ ★ or *. Using ● instead.")
+        return "●"
+
+
 class Label(Widget):
     def __init__(self, text):
         super().__init__(text)

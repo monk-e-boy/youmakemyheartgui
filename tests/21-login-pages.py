@@ -8,7 +8,7 @@
 # and show() the list we do want.
 #
 from youmakemyheartgui import go
-from youmakemyheartgui.Widgets import Button, Label, Input, Panel
+from youmakemyheartgui.Widgets import Button, Label, PasswordInput, Input, Panel
 
 # ------------------------------------------------------------------
 # STYLES (written once, used many times)
@@ -60,7 +60,7 @@ username.style <<= "left: 335px; top: 195px;" + field_style
 password_label = Label("Password")
 password_label.style <<= "left: 195px; top: 265px;" + caption_style
 
-password = Input("")
+password = PasswordInput("", "♡")
 password.style <<= "left: 335px; top: 265px;" + field_style
 
 error = Label("")

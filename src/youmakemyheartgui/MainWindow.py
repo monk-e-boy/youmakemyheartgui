@@ -10,6 +10,8 @@ from .style import split_style, qt_stylesheet, place, with_box_defaults
 from .colour import adjust_colour
 from .Panel import PanelFrame, parse_bevel, DEFAULT_FACE
 from .Physics import Physics
+from .Widgets import PasswordInput
+
 
 DEBUG = False
 
@@ -124,6 +126,11 @@ class MainWindow(QWidget):
         inp = self.inputs[input.instance_name]
 
         layout, qt_props = split_style(input.style)
+
+        if isinstance(input, PasswordInput):
+            # Qt wants the hiding character as a number
+            qt_props["lineedit-password-character"] = ord(input.char)
+
         inp.setStyleSheet(qt_stylesheet("QLineEdit", qt_props))
 
         self._place(input, inp, layout)
@@ -447,6 +454,10 @@ class MainWindow(QWidget):
         # inp = QLineEdit(input.text, self)
         # inp = QLineEdit("", self)
         inp = QLineEdit("")
+        
+        if isinstance(input, PasswordInput):
+            inp.setEchoMode(QLineEdit.EchoMode.Password)
+
         # we need to tell our Widget that the text has changed
         inp.textChanged.connect(input.internal_text_changed_handler)
         
