@@ -14,7 +14,8 @@ global app, win
 app = QApplication([])
 win = MainWindow()
 
-from .PrintCapture import *
+from .PrintCapture import start_print_capture
+start_print_capture(win.terminal_append)
 
 
 def go_link_buttons_to_click_handlers(global_vars):
