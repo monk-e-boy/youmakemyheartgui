@@ -22,7 +22,6 @@ classifiers = [
 # LIST YOUR DEPENDENCIES HERE
 dependencies = [
     "pyqt6",
-    "cssutils",
     "pymunk"
 ]
 

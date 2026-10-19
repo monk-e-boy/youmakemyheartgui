@@ -5,7 +5,6 @@ from PyQt6.QtGui import QPixmap, QPainter, QColor
 from PyQt6.QtCore import Qt
 from .TerminalLabel import TerminalLabel
 from .Grid import GridWidget
-import cssutils
 from .style import parse_style, split_style, qt_stylesheet, place, with_box_defaults
 from .colour import adjust_colour
 from .Panel import PanelFrame, parse_bevel, DEFAULT_FACE
