@@ -300,7 +300,7 @@ class Button(Widget):
         # if student sets button.text BEFORE go, there
         # is no container yet.
         if self.container:
-            self.container.change_text_label(self)
+            self.container.change_text_button(self)
 
 
 class Input(Widget):

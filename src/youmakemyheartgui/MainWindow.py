@@ -223,7 +223,8 @@ class MainWindow(QWidget):
 
         # inp = QLineEdit(input.text, self)
         # inp = QLineEdit("", self)
-        inp = QLineEdit("")
+        #inp = QLineEdit("")
+        inp = QLineEdit(input.text)
         
         if isinstance(input, PasswordInput):
             inp.setEchoMode(QLineEdit.EchoMode.Password)
