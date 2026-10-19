@@ -1,6 +1,7 @@
 #import os
 #import traceback
 from PyQt6.QtCore import QTimer
+from .style import parse_style
 from .errors import where_in_student_code
 
 #
@@ -111,7 +112,85 @@ class Widget:
         self.instance_name = None # store variable name (e.g., 'button1')
         self.click_handler = None # store function name (e.g., button1_click)
         #
-        self._style = ""
+        # The style is kept as a dictionary: {"left": "50px", "color": "red"}
+        # so each property can only ever appear once.
+        #
+        self._props = {}
+        self._style_proxy = StyleProxy(self)
+        #
+        #
+        # Hover style will only accept colour changes
+        # it will IGNORE location, size (padding, margins),
+        # fonts (may change size) as these move the button
+        # under the mouse/finger which is super anoying
+        #
+        self._hover_style = ""
+        self._hover_style_proxy = HoverStyleProxy(self)
+        #
+        self.container = None # set this to the QT window that contains us
+
+        self.state = UserData()
+        self.stash = UserData()
+        self.inventory = UserData()
+
+        self.fixed = False   # True = physics won't move us (ramps, platforms, control buttons)
+
+
+    @property
+    def style(self):
+        return self._style_proxy
+
+    @property
+    def hover_style(self):
+        return self._hover_style_proxy
+
+    @style.setter
+    def style(self, s):
+        # Why only strings? "b.style <<= ..." is really:
+        #     b.style = b.style.__ilshift__(...)
+        # so Python calls this setter with the StyleProxy it just got from
+        # the getter. We must ignore that, otherwise we would wipe the style.
+        if isinstance(s, str):
+            self._props = parse_style(s)
+
+    @hover_style.setter
+    def hover_style(self, s):
+        # Defensive: only clean if it's a string
+        if isinstance(s, str):
+            self._hover_style = self._clean(s)
+
+    def _clean(self, s):
+        s = s.strip().strip("{}")
+        if not s.endswith(";"):
+            s += ";"
+        return s
+
+    @property
+    def _style(self):
+        """The style as text, e.g. 'left: 50px; color: red;'
+        (this is what the StyleProxy prints and what MainWindow reads)"""
+        return " ".join(f"{key}: {value};" for key, value in self._props.items())
+
+    # called from the style proxy <<=
+    def add_style(self, s):
+        for key, value in parse_style(s).items():
+            # Take the old value out first, so the new one goes on the END.
+            # In a stylesheet the last declaration wins, and that matters
+            # when two properties overlap (background vs background-color).
+            self._props.pop(key, None)
+            self._props[key] = value
+
+
+class Widgetxxx:
+    def __init__(self, text):
+        self._text = text
+        self.instance_name = None # store variable name (e.g., 'button1')
+        self.click_handler = None # store function name (e.g., button1_click)
+        #
+
+
+        #self._style = ""
+        self._props = {}
         self._style_proxy = StyleProxy(self)
         #
         #
