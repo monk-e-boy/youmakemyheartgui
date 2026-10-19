@@ -24,6 +24,7 @@ class StyleProxy:
     def __str__(self):
         return self.button._style
 
+
 class HoverStyleProxy:
     def __init__(self, widget):
         self.widget = widget

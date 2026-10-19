@@ -33,8 +33,6 @@ have a something_happened("variable name", variable, variable.stash)
 
 timer / heartbeat call a function (e.g. to animate things)
 
-look in StyleProxy - this won't work for other widgets? Only buttons?
-
 pip install from github + versions
 
 sort out -- cssutils, update the toml

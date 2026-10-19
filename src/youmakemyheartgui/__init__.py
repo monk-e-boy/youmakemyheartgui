@@ -3,7 +3,6 @@
 from PyQt6.QtWidgets import QApplication
 from .MainWindow import MainWindow
 from .Widgets import Button, Label, Input, Image, Panel, Timer
-import inspect
 import sys
 import os, traceback
 
@@ -36,13 +35,8 @@ def find_widgets(global_vars, kind):
 
 
 def go_link_buttons_to_click_handlers(global_vars):
-     # 1. Identify Button Instances and their variable names
-    buttons_to_link = {}
-    for name, value in global_vars.copy().items():
-        if isinstance(value, Button):
-            # Store the name on the object itself
-            value.instance_name = name
-            buttons_to_link[name] = value
+    # 1. Identify Button Instances and their variable names
+    buttons_to_link = find_widgets(global_vars, Button)
 
     # 2. Link Buttons to Click Handler Functions
     for btn_name, button_obj in buttons_to_link.items():
@@ -55,8 +49,9 @@ def go_link_buttons_to_click_handlers(global_vars):
         
         if specific and callable(specific):
 
-            handler_func = global_vars[handler_name]
-            button_obj.click_handler = handler_func
+            # handler_func = global_vars[handler_name]
+            # button_obj.click_handler = handler_func
+            button_obj.click_handler = specific
             print(f"✅ Linked Button '{btn_name}' (Text: '{button_obj._text}') to handler '{handler_name}'.")
 
         elif generic and callable(generic):
@@ -76,18 +71,15 @@ def go_link_buttons_to_click_handlers(global_vars):
                 print(f"❌ Button [{name}] could not find click event:\ndef {func_name}():\n    pass")
             print(f"❌ Button '{btn_name}' does NOT have a click event: '{handler_name}'.")
 
+
 # Text changed + return pressed
 def go_link_inputs_to_handlers(global_vars):
     # 1. Identify Input Instances and their variable names
-    inputs_to_link = {}
-    for name, value in global_vars.copy().items():
-        if isinstance(value, Input):
-            # Store the name on the object itself
-            value.instance_name = name
-            inputs_to_link[name] = value
+    inputs_to_link = find_widgets(global_vars, Input)
 
     # 2. Link Inputs to text changed and return pressed handlers
     for inp_name, input_obj in inputs_to_link.items():
+        
         # The expected function name is the button's name plus '_text_changed'
         tc = f"{inp_name}_text_changed"
         rp = f"{inp_name}_return_pressed"
