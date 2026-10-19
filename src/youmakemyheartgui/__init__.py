@@ -21,6 +21,20 @@ from .errors import friendly_excepthook
 sys.excepthook = friendly_excepthook
 
 
+def find_widgets(global_vars, kind):
+    """{'name': widget} for every global of this type. Also names them."""
+    found = {}
+    for name, value in global_vars.copy().items():
+        #
+        # E.g.
+        # Button, Label, Image, Input
+        #
+        if isinstance(value, kind):
+            value.instance_name = name
+            found[name] = value
+    return found
+
+
 def go_link_buttons_to_click_handlers(global_vars):
      # 1. Identify Button Instances and their variable names
     buttons_to_link = {}
@@ -132,6 +146,21 @@ def _make_file_handler(path, global_vars):
 
 
 def go_part_2(global_vars):
+    # PANELS first: they sit behind everything else
+    for order, panel in enumerate(find_widgets(global_vars, Panel).values()):
+        win.add_panel(panel, order)
+
+    for button in find_widgets(global_vars, Button).values():
+        win.add_button(button)
+    for label in find_widgets(global_vars, Label).values():
+        win.add_label(label)
+    for image in find_widgets(global_vars, Image).values():
+        win.add_image(image)
+    for inp in find_widgets(global_vars, Input).values():
+        win.add_input(inp)
+
+
+def go_part_2_old(global_vars):
     # PANELS first: they sit behind everything else
     panels_to_link = {}
     for name, value in global_vars.copy().items():
