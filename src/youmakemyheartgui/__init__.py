@@ -17,6 +17,9 @@ win = MainWindow()
 from .PrintCapture import start_print_capture
 start_print_capture(win.terminal_append)
 
+from .errors import friendly_excepthook
+sys.excepthook = friendly_excepthook
+
 
 def go_link_buttons_to_click_handlers(global_vars):
      # 1. Identify Button Instances and their variable names

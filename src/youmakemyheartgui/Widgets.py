@@ -1,7 +1,7 @@
-import os
-import traceback
+#import os
+#import traceback
 from PyQt6.QtCore import QTimer
-
+from .errors import where_in_student_code
 
 #
 # TODO: fix this turd
@@ -63,13 +63,17 @@ class Timer:
         try:
             self.tick_handler()
         except Exception as e:
+
+
             # find the innermost line in the STUDENT'S file, not our library
-            library_dir = os.path.dirname(os.path.abspath(__file__))
-            where = ""
-            for frame in reversed(traceback.extract_tb(e.__traceback__)):
-                if not os.path.abspath(frame.filename).startswith(library_dir):
-                    where = f" (line {frame.lineno} of {os.path.basename(frame.filename)})"
-                    break
+            #library_dir = os.path.dirname(os.path.abspath(__file__))
+            #where = ""
+            #for frame in reversed(traceback.extract_tb(e.__traceback__)):
+            #    if not os.path.abspath(frame.filename).startswith(library_dir):
+            #        where = f" (line {frame.lineno} of {os.path.basename(frame.filename)})"
+            #        break
+
+            where = where_in_student_code(e.__traceback__)
             print(f"❌ Error in {self.instance_name}_tick{where}:\n   {type(e).__name__}: {e}")
             # stop, otherwise this message would repeat many times a second
             self.stop()
@@ -204,10 +208,20 @@ class Button(Widget):
     def text(self):
         return self._text
 
+#    @text.setter
+#    def text(self, text):
+#        self._text = text
+#        self.container.change_text_button(self)
+
     @text.setter
     def text(self, text):
         self._text = text
-        self.container.change_text_button(self)
+
+        # if student sets button.text BEFORE go, there
+        # is no container yet.
+        if self.container:
+            self.container.change_text_label(self)
+
 
 class Input(Widget):
     def __init__(self, text):
@@ -223,17 +237,25 @@ class Input(Widget):
         self.style <<= "left: 20px;"
         self.style <<= "top: 20px;"
 
+
     @property
     def text(self):
         return self._text
 
+
     @text.setter
     def text(self, text):
         self._text = text
-        self.container.change_text_input(self)
+
+        # if student sets button.text BEFORE go, there
+        # is no container yet.
+        if self.container:
+            self.container.change_text_input(self)
+
 
     def internal_text_changed_handler(self):
         self._text = self.container.inputs[self.instance_name].text()
+
 
     def add_style(self, s):
         super().add_style(s)
@@ -290,10 +312,16 @@ class Label(Widget):
     def text(self):
         return self._text
 
+
     @text.setter
     def text(self, text):
         self._text = text
-        self.container.change_text_label(self)
+
+        # if student sets button.text BEFORE go, there
+        # is no container yet.
+        if self.container:
+            self.container.change_text_label(self)
+
 
     def add_style(self, s):
         super().add_style(s)
@@ -332,13 +360,18 @@ class Image(Widget):
     def text(self):
         return self._text
 
+
     @text.setter
     def text(self, text):
         self._text = text
         ## self.container.change_text_label(self)
 
+
     def src(self, path):
-        self.container.change_img_src(self, path)
+        self._text = path
+        if self.container:
+            self.container.change_img_src(self, path)
+
 
     def add_style(self, s):
         super().add_style(s)

@@ -6,7 +6,7 @@ from PyQt6.QtCore import Qt
 from .TerminalLabel import TerminalLabel
 from .Grid import GridWidget
 import cssutils
-from .style import split_style, qt_stylesheet, place, with_box_defaults
+from .style import parse_style, split_style, qt_stylesheet, place, with_box_defaults
 from .colour import adjust_colour
 from .Panel import PanelFrame, parse_bevel, DEFAULT_FACE
 from .Physics import Physics
@@ -271,7 +271,12 @@ class MainWindow(QWidget):
 
         # hover/pressed need a *colour*; if there's a gradient, use its first stop
         base = qt_props.get("background-color", "#4CAF50")
+
         hover = adjust_colour(base, 0.3)
+        hover_props = parse_style(str(button.hover_style))
+        if "background-color" in hover_props:
+            hover = hover_props["background-color"]
+
         pressed = adjust_colour(base, -0.3)
 
         btn.setStyleSheet(qt_stylesheet(
