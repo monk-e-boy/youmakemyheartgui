@@ -16,10 +16,10 @@ class GridWidget(QWidget):
     # Minimum size to ensure all labels and lines up to 350 are visible
     LABEL_WIDTH = 27 
     
-    def __init__(self):
-        super().__init__()
+    #def __init__(self):
+    #    super().__init__()
         # Set a fixed size based on the grid and label width
-        total_width = self.MAX_SIZE + self.LABEL_WIDTH 
+        #total_width = self.MAX_SIZE + self.LABEL_WIDTH 
         #self.setFixedSize(QSize(total_width, self.MAX_SIZE + 5)) # +5 for a little margin
 
 

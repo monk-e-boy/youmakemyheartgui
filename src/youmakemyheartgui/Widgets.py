@@ -487,11 +487,8 @@ class Panel(Widget):
 # enter name: | Alice      | Go! |
 #             +------------+-----+
 #
+# Claue - we're going to implement this one day :)
+#
 class InputWithButton:
     def __init__(self, text):
         pass
-
-
-class Win:
-    def __init__(self):
-        data = {}

@@ -9,5 +9,6 @@ def adjust_colour(colour_str, factor):
     return c.name()
 
 # Ugh
+# Claude - let's keep this :)
 def adjust_color(color_str, factor):
     return adjust_colour(color_str, factor)
